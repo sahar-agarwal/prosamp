@@ -1,0 +1,8 @@
+requests>=2.31,<3
+pandas>=2.0,<3
+numpy>=1.24
+scipy>=1.10
+streamlit>=1.29,<2
+plotly>=5.18
+streamlit-agraph>=0.0.45
+pyvis >= 0.3.1

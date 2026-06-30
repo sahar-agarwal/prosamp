@@ -1,0 +1,10 @@
+{
+  "_comment": "SUBPRIME auto-loan ABS only (works with absee.py's auto-loan field defaults). Prime shelves were removed so the dashboard speaks one collateral grade. Entries with cik '0' are placeholders -- run `python absee.py find \"<shelf name>\"` to look up the real trust CIK, then paste it in. The deal names match data/deals.csv so synthetic and real data line up on swap. CMBS, credit-card, lease, and depositor entities are excluded: different ABS-EE schemas or no asset-level data.",
+  "deals": [
+    {"name": "AmeriCredit Auto Receivables 2021-3 (subprime)", "cik": "1888143"},
+    {"name": "AmeriCredit Auto Receivables 2022-2 (subprime)", "cik": "1929381"},
+    {"name": "AmeriCredit Auto Receivables 2023-1 (subprime)", "cik": "1963240"},
+    {"name": "Santander Drive Auto Receivables 2022-2 (subprime)", "cik": "1913963"},
+    {"name": "Exeter Automobile Receivables 2022-2 (subprime)", "cik": "1920761"}
+  ]
+}

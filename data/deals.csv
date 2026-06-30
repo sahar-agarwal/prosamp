@@ -1,0 +1,14 @@
+deal_name,sector,originator,grade,closing_date,original_pool_balance,initial_oc_pct,target_oc_pct,reserve_fund_pct,excess_spread_pct,total_subordination_pct,trigger_strength,required_ce_senior_pct,assumed_pd,assumed_lgd
+AmeriCredit Auto Receivables 2021-3 (subprime),auto_loan,AmeriCredit,subprime,2021-08-12,833000000.0,0.0886,0.08,0.0282,0.0472,0.25,0.58,0.2143,0.155,0.55
+AmeriCredit Auto Receivables 2022-2 (subprime),auto_loan,AmeriCredit,subprime,2022-06-18,1860000000.0,0.0864,0.08,0.026,0.0562,0.25,0.56,0.2183,0.165,0.575
+AmeriCredit Auto Receivables 2023-1 (subprime),auto_loan,AmeriCredit,subprime,2023-02-15,1370000000.0,0.0899,0.082,0.0274,0.0508,0.255,0.57,0.2205,0.16,0.56
+Santander Drive Auto Receivables 2022-2 (subprime),auto_loan,Santander Consumer,subprime,2022-04-25,1220000000.0,0.0886,0.09,0.0186,0.0868,0.283,0.46,0.2613,0.2,0.55
+Santander Drive Auto Receivables 2023-2 (subprime),auto_loan,Santander Consumer,subprime,2023-05-17,992000000.0,0.0904,0.09,0.0201,0.0805,0.285,0.47,0.2598,0.197,0.55
+Exeter Automobile Receivables 2022-2 (subprime),auto_loan,Exeter Finance,subprime,2022-04-27,961000000.0,0.0928,0.1,0.0142,0.1048,0.42,0.42,0.377,0.21,0.62
+Exeter Automobile Receivables 2023-1 (subprime),auto_loan,Exeter Finance,subprime,2023-01-22,1866000000.0,0.0945,0.1,0.0155,0.0994,0.41,0.43,0.3661,0.205,0.61
+DriveTime Auto Owner Trust 2022-2 (subprime),auto_loan,DriveTime,subprime,2022-08-10,1955000000.0,0.1003,0.11,0.0128,0.1102,0.43,0.4,0.395,0.22,0.636
+Westlake Automobile Receivables 2022-3 (subprime),auto_loan,Westlake Financial,subprime,2022-09-14,761000000.0,0.0913,0.085,0.0256,0.058,0.3,0.5,0.2551,0.18,0.555
+GLS Auto Receivables Trust 2022-4 (subprime),auto_loan,Global Lending Services,subprime,2022-11-09,1350000000.0,0.0995,0.105,0.0157,0.0985,0.4,0.43,0.3616,0.205,0.61
+Flagship Credit Auto Trust 2022-3 (subprime),auto_loan,Flagship Credit,subprime,2022-07-20,1374000000.0,0.0951,0.09,0.0243,0.0634,0.32,0.49,0.2746,0.19,0.568
+CPS Auto Receivables Trust 2022-C (subprime),auto_loan,Consumer Portfolio Services,subprime,2022-06-15,1330000000.0,0.0914,0.095,0.0168,0.094,0.36,0.45,0.3232,0.2,0.6
+American Credit Acceptance 2022-3 (subprime),auto_loan,American Credit Acceptance,subprime,2022-09-21,1487000000.0,0.1026,0.115,0.0113,0.1165,0.45,0.39,0.4178,0.24,0.625
