@@ -49,7 +49,18 @@ def ce_path(deal: pd.Series, perf: pd.DataFrame, senior_ce0: float,
         return pd.DataFrame(columns=cols)
 
     perf = perf.sort_values("period_end").reset_index(drop=True)
-    pool0 = float(deal["original_pool_balance"])
+    # Pool factor must be measured against the SAME balance series it divides, or a
+    # basis mismatch (curated stated pool in deals.csv vs the summed loan balances in
+    # realized_performance.csv) pins the factor at 1.0 and CE never grows. Prefer the
+    # realized file's own original_pool_balance; fall back to deals.csv, then to the
+    # first reported balance.
+    pool0 = 0.0
+    if "original_pool_balance" in perf.columns and perf["original_pool_balance"].notna().any():
+        pool0 = float(perf["original_pool_balance"].dropna().iloc[0])
+    if pool0 <= 0:
+        pool0 = float(deal.get("original_pool_balance", 0) or 0)
+    if pool0 <= 0 and "period_end_balance" in perf.columns:
+        pool0 = float(perf["period_end_balance"].iloc[0])
     init_oc = float(deal["initial_oc_pct"])
     target_oc = float(deal["target_oc_pct"])
 
