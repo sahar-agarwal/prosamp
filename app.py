@@ -1,5 +1,5 @@
 """
-Credit Enhancement Dashboard - ABS Strategy SIP (subprime auto)
+Credit Enhancement Dashboard - ABS Strategy SIP (prime + subprime auto)
 
 Four analytical lenses on credit enhancement (CE) -- a price, a signal, a
 risk-transfer mechanism, and how they converge -- plus the contractual triggers
@@ -40,6 +40,7 @@ C_BREACH = "#8c4a3f"      # breach / warning
 
 RATING_COLORS = {"AAA": "#405871", "AA": "#7f9bb9", "A": "#58706e",
                  "BBB": "#c9b47e", "BB": "#706240", "B": "#565871"}
+GRADE_COLORS = {"prime": "#405871", "subprime": "#c9b47e"}
 LOSS_SCALE = [[0.0, "#b2c1c0"], [0.5, "#c9b47e"], [1.0, "#706240"]]
 
 pio.templates["ce"] = go.layout.Template(layout=dict(
@@ -157,16 +158,26 @@ try:
     deals = get_deals()
     tranches = get_tranches()
     realized = get_realized()
-except FileNotFoundError as exc:
-    st.error(str(exc))
-    st.stop()
+except FileNotFoundError:
+    # First launch with an empty data/ -- generate the sample set instead of making
+    # the user run make_sample_data.py by hand, then reload.
+    import make_sample_data
+    with st.spinner("No data found - generating the sample dataset..."):
+        make_sample_data.build(data.DATA_DIR)
+    get_deals.clear()
+    get_tranches.clear()
+    get_realized.clear()
+    deals = get_deals()
+    tranches = get_tranches()
+    realized = get_realized()
 
 st.sidebar.title("Controls")
 deal_name = st.sidebar.selectbox("Deal", sorted(deals["deal_name"]))
 deal = deals[deals["deal_name"] == deal_name].iloc[0]
 deal_tr = tranches[tranches["deal_name"] == deal_name].copy()
 deal_perf = realized[realized["deal_name"] == deal_name].copy()
-# All deals share the subprime auto sector; rankings compare the full universe.
+# Rankings compare the full universe (prime + subprime); the credibility score is
+# risk-normalized, so cross-grade comparison is intentional.
 deals_s = deals
 
 st.sidebar.markdown("---")
@@ -188,7 +199,7 @@ n_sims = st.sidebar.select_slider("Simulations", [10_000, 25_000, 50_000, 100_00
 st.sidebar.caption(f"Grade: **{deal['grade']}**  ·  Originator: **{deal['originator']}**")
 
 st.title("Credit Enhancement Dashboard")
-st.caption(f"{deal_name}  ·  subprime auto loan ABS")
+st.caption(f"{deal_name}  ·  {deal['grade']} auto loan ABS")
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "1 · Risk-Adjusted Return", "2 · Originator Confidence",
@@ -328,21 +339,22 @@ with tab2:
         for k, v in cs.flags.items():
             st.write(f"{'🔴' if v else '🟢'} {k.replace('_', ' ')}")
 
-    st.markdown("**Deal ranking by credibility (subprime universe)**")
+    st.markdown("**Deal ranking by credibility (prime + subprime)**")
     ranking = scoring.score_all(deals_s)
     st.dataframe(ranking, use_container_width=True, hide_index=True)
 
     last_loss = realized.groupby("deal_name")["cum_net_loss_rate"].last().reset_index()
-    merged = ranking.merge(last_loss, on="deal_name", how="left")
+    merged = (ranking.merge(last_loss, on="deal_name", how="left")
+              .merge(deals[["deal_name", "grade"]], on="deal_name", how="left"))
     if merged["cum_net_loss_rate"].notna().any():
         merged["loss_pct"] = merged["cum_net_loss_rate"] * 100
         merged["short"] = merged["deal_name"].str.replace(r" \(.*\)", "", regex=True)
         fig = px.scatter(merged.dropna(subset=["loss_pct"]),
                          x="credibility_score", y="loss_pct", text="short",
-                         color="n_red_flags", color_continuous_scale=LOSS_SCALE,
+                         color="grade", color_discrete_map=GRADE_COLORS,
                          labels={"credibility_score": "Credibility score",
                                  "loss_pct": "Realized cumulative loss (%)",
-                                 "n_red_flags": "Red flags"})
+                                 "grade": "Grade"})
         fig.update_traces(textposition="top center", textfont_size=9,
                           marker=dict(size=13, line=dict(width=1, color="white")))
         style(fig, height=420,
@@ -461,7 +473,7 @@ with tab4:
                   title="A breach steps OC up -> CE rebuilds (see Tab 1)")
             st.plotly_chart(fig, use_container_width=True)
 
-    st.markdown("**Trigger headroom across the subprime universe**")
+    st.markdown("**Trigger headroom across the deal universe**")
     rows = []
     for _, d in deals.iterrows():
         e = triggers.evaluate(d, realized[realized["deal_name"] == d["deal_name"]])
@@ -647,10 +659,10 @@ with tab6:
 
     st.subheader("Data collection")
     st.markdown(
-        "**Scope: subprime auto-loan ABS only.** The dashboard compares deals "
-        "*within one collateral grade*, so prime shelves were dropped -- a "
-        "credibility score or trigger headroom is only meaningful against peers "
-        "facing the same loss regime.\n\n"
+        "**Scope: prime and subprime auto-loan ABS.** The dashboard spans both "
+        "collateral grades; the credibility score is risk-normalized (CE relative to "
+        "expected loss, not absolute), so prime and subprime are comparable on the "
+        "same axis.\n\n"
         "- **Realized performance** comes from SEC EDGAR **ABS-EE** loan-level "
         "filings (Reg AB II, Schedule AL), pulled by `absee.py`. For each monthly "
         "filing it sums loan-level charge-offs and recoveries to a pool-level "
@@ -723,7 +735,7 @@ with tab6:
 
     st.subheader("What to trust this for")
     st.markdown(
-        "- **Relative** comparisons across subprime deals (credibility ranking, "
+        "- **Relative** comparisons across deals (credibility ranking, "
         "trigger headroom, CE adequacy) are the point.\n"
         "- The Vasicek MC and parametric triggers are **stylized** -- calibrate rho, "
         "PD/LGD, and swap in real prospectus trigger tables before any decision use.\n"
