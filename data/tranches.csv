@@ -1,66 +1,102 @@
 deal_name,tranche,rating,original_balance,coupon_pct,attachment_pct,detachment_pct,initial_ce_pct,required_ce_pct
-AmeriCredit Auto Receivables 2021-3 (subprime),E,BB,49980000.0,0.105,0.08,0.14,0.08,0.066
-AmeriCredit Auto Receivables 2021-3 (subprime),D,BBB,66640000.0,0.078,0.14,0.22,0.14,0.1254
-AmeriCredit Auto Receivables 2021-3 (subprime),C,A,74970000.0,0.06,0.22,0.31,0.22,0.1911
-AmeriCredit Auto Receivables 2021-3 (subprime),B,AA,91630000.0,0.046,0.31,0.42,0.31,0.2375
-AmeriCredit Auto Receivables 2021-3 (subprime),A,AAA,549780000.0,0.034,0.42,1.0,0.42,0.3847
-AmeriCredit Auto Receivables 2022-2 (subprime),E,BB,111600000.0,0.105,0.08,0.14,0.08,0.0604
-AmeriCredit Auto Receivables 2022-2 (subprime),D,BBB,148800000.0,0.078,0.14,0.22,0.14,0.1154
-AmeriCredit Auto Receivables 2022-2 (subprime),C,A,167400000.0,0.06,0.22,0.31,0.22,0.173
-AmeriCredit Auto Receivables 2022-2 (subprime),B,AA,204600000.0,0.046,0.31,0.42,0.31,0.254
-AmeriCredit Auto Receivables 2022-2 (subprime),A,AAA,1227600000.0,0.034,0.42,1.0,0.42,0.3759
-AmeriCredit Auto Receivables 2023-1 (subprime),E,BB,82200000.0,0.105,0.08,0.14,0.08,0.068
-AmeriCredit Auto Receivables 2023-1 (subprime),D,BBB,109600000.0,0.078,0.14,0.22,0.14,0.1055
-AmeriCredit Auto Receivables 2023-1 (subprime),C,A,123300000.0,0.06,0.22,0.31,0.22,0.2009
-AmeriCredit Auto Receivables 2023-1 (subprime),B,AA,150700000.0,0.046,0.31,0.42,0.31,0.2579
-AmeriCredit Auto Receivables 2023-1 (subprime),A,AAA,904200000.0,0.034,0.42,1.0,0.42,0.3709
-Santander Drive Auto Receivables 2022-2 (subprime),E,BB,73200000.0,0.105,0.08,0.14,0.08,0.0732
-Santander Drive Auto Receivables 2022-2 (subprime),D,BBB,97600000.0,0.078,0.14,0.22,0.14,0.1169
-Santander Drive Auto Receivables 2022-2 (subprime),C,A,109800000.0,0.06,0.22,0.31,0.22,0.1704
-Santander Drive Auto Receivables 2022-2 (subprime),B,AA,134200000.0,0.046,0.31,0.42,0.31,0.2332
-Santander Drive Auto Receivables 2022-2 (subprime),A,AAA,805200000.0,0.034,0.42,1.0,0.42,0.3314
-Santander Drive Auto Receivables 2023-2 (subprime),E,BB,59520000.0,0.105,0.08,0.14,0.08,0.0607
-Santander Drive Auto Receivables 2023-2 (subprime),D,BBB,79360000.0,0.078,0.14,0.22,0.14,0.1191
-Santander Drive Auto Receivables 2023-2 (subprime),C,A,89280000.0,0.06,0.22,0.31,0.22,0.1905
-Santander Drive Auto Receivables 2023-2 (subprime),B,AA,109120000.0,0.046,0.31,0.42,0.31,0.2532
-Santander Drive Auto Receivables 2023-2 (subprime),A,AAA,654720000.0,0.034,0.42,1.0,0.42,0.3377
-Exeter Automobile Receivables 2022-2 (subprime),E,BB,57660000.0,0.105,0.08,0.14,0.08,0.073
-Exeter Automobile Receivables 2022-2 (subprime),D,BBB,76880000.0,0.078,0.14,0.22,0.14,0.1241
-Exeter Automobile Receivables 2022-2 (subprime),C,A,86490000.0,0.06,0.22,0.31,0.22,0.1872
-Exeter Automobile Receivables 2022-2 (subprime),B,AA,105710000.0,0.046,0.31,0.42,0.31,0.2737
-Exeter Automobile Receivables 2022-2 (subprime),A,AAA,634260000.0,0.034,0.42,1.0,0.42,0.3718
-Exeter Automobile Receivables 2023-1 (subprime),E,BB,111960000.0,0.105,0.08,0.14,0.08,0.0614
-Exeter Automobile Receivables 2023-1 (subprime),D,BBB,149280000.0,0.078,0.14,0.22,0.14,0.1288
-Exeter Automobile Receivables 2023-1 (subprime),C,A,167940000.0,0.06,0.22,0.31,0.22,0.1899
-Exeter Automobile Receivables 2023-1 (subprime),B,AA,205260000.0,0.046,0.31,0.42,0.31,0.2668
-Exeter Automobile Receivables 2023-1 (subprime),A,AAA,1231560000.0,0.034,0.42,1.0,0.42,0.3215
-DriveTime Auto Owner Trust 2022-2 (subprime),E,BB,117300000.0,0.105,0.08,0.14,0.08,0.0658
-DriveTime Auto Owner Trust 2022-2 (subprime),D,BBB,156400000.0,0.078,0.14,0.22,0.14,0.1195
-DriveTime Auto Owner Trust 2022-2 (subprime),C,A,175950000.0,0.06,0.22,0.31,0.22,0.1887
-DriveTime Auto Owner Trust 2022-2 (subprime),B,AA,215050000.0,0.046,0.31,0.42,0.31,0.2542
-DriveTime Auto Owner Trust 2022-2 (subprime),A,AAA,1290300000.0,0.034,0.42,1.0,0.42,0.3442
-Westlake Automobile Receivables 2022-3 (subprime),E,BB,45660000.0,0.105,0.08,0.14,0.08,0.0664
-Westlake Automobile Receivables 2022-3 (subprime),D,BBB,60880000.0,0.078,0.14,0.22,0.14,0.1086
-Westlake Automobile Receivables 2022-3 (subprime),C,A,68490000.0,0.06,0.22,0.31,0.22,0.1718
-Westlake Automobile Receivables 2022-3 (subprime),B,AA,83710000.0,0.046,0.31,0.42,0.31,0.2803
-Westlake Automobile Receivables 2022-3 (subprime),A,AAA,502260000.0,0.034,0.42,1.0,0.42,0.3182
-GLS Auto Receivables Trust 2022-4 (subprime),E,BB,81000000.0,0.105,0.08,0.14,0.08,0.0606
-GLS Auto Receivables Trust 2022-4 (subprime),D,BBB,108000000.0,0.078,0.14,0.22,0.14,0.1235
-GLS Auto Receivables Trust 2022-4 (subprime),C,A,121500000.0,0.06,0.22,0.31,0.22,0.1833
-GLS Auto Receivables Trust 2022-4 (subprime),B,AA,148500000.0,0.046,0.31,0.42,0.31,0.2844
-GLS Auto Receivables Trust 2022-4 (subprime),A,AAA,891000000.0,0.034,0.42,1.0,0.42,0.3482
-Flagship Credit Auto Trust 2022-3 (subprime),E,BB,82440000.0,0.105,0.08,0.14,0.08,0.073
-Flagship Credit Auto Trust 2022-3 (subprime),D,BBB,109920000.0,0.078,0.14,0.22,0.14,0.1229
-Flagship Credit Auto Trust 2022-3 (subprime),C,A,123660000.0,0.06,0.22,0.31,0.22,0.1852
-Flagship Credit Auto Trust 2022-3 (subprime),B,AA,151140000.0,0.046,0.31,0.42,0.31,0.2475
-Flagship Credit Auto Trust 2022-3 (subprime),A,AAA,906840000.0,0.034,0.42,1.0,0.42,0.379
-CPS Auto Receivables Trust 2022-C (subprime),E,BB,79800000.0,0.105,0.08,0.14,0.08,0.062
-CPS Auto Receivables Trust 2022-C (subprime),D,BBB,106400000.0,0.078,0.14,0.22,0.14,0.1061
-CPS Auto Receivables Trust 2022-C (subprime),C,A,119700000.0,0.06,0.22,0.31,0.22,0.1702
-CPS Auto Receivables Trust 2022-C (subprime),B,AA,146300000.0,0.046,0.31,0.42,0.31,0.2809
-CPS Auto Receivables Trust 2022-C (subprime),A,AAA,877800000.0,0.034,0.42,1.0,0.42,0.3157
-American Credit Acceptance 2022-3 (subprime),E,BB,89220000.0,0.105,0.08,0.14,0.08,0.0692
-American Credit Acceptance 2022-3 (subprime),D,BBB,118960000.0,0.078,0.14,0.22,0.14,0.1223
-American Credit Acceptance 2022-3 (subprime),C,A,133830000.0,0.06,0.22,0.31,0.22,0.1862
-American Credit Acceptance 2022-3 (subprime),B,AA,163570000.0,0.046,0.31,0.42,0.31,0.2725
-American Credit Acceptance 2022-3 (subprime),A,AAA,981420000.0,0.034,0.42,1.0,0.42,0.3852
+Nissan Auto Receivables 2021-A (prime),A-1,AAA,172000000.0,0.0005908,0.0425,1.0,0.0425,0.0375
+Nissan Auto Receivables 2021-A (prime),A-2,AAA,356500000.0,0.0016,0.0425,1.0,0.0425,0.0375
+Nissan Auto Receivables 2021-A (prime),A-3,AAA,356500000.0,0.0033,0.0425,1.0,0.0425,0.0375
+Nissan Auto Receivables 2021-A (prime),A-4,AAA,115000000.0,0.0057,0.0425,1.0,0.0425,0.0375
+Ally Auto Receivables Trust 2022-2 (prime),A-1,AAA,234000000.0,0.033,0.0585,1.0,0.0585,0.05
+Ally Auto Receivables Trust 2022-2 (prime),A-2,AAA,350000000.0,0.0462,0.0585,1.0,0.0585,0.05
+Ally Auto Receivables Trust 2022-2 (prime),A-3,AAA,351000000.0,0.0476,0.0585,1.0,0.0585,0.05
+Ally Auto Receivables Trust 2022-2 (prime),A-4,AAA,76920000.0,0.0487,0.0585,1.0,0.0585,0.05
+Ally Auto Receivables Trust 2022-2 (prime),B,AA,22510000.0,0.052,0.0375,0.0585,0.0375,0.032
+Ally Auto Receivables Trust 2022-2 (prime),C,A,18760000.0,0.057,0.02,0.0375,0.02,0.017
+Ally Auto Receivables Trust 2022-2 (prime),D,BBB,13940000.0,0.062,0.007,0.02,0.007,0.006
+Ally Auto Receivables Trust 2023-1 (prime),A-1,AAA,233020000.0,0.054,0.0585,1.0,0.0585,0.05
+Ally Auto Receivables Trust 2023-1 (prime),A-2,AAA,372010000.0,0.0576,0.0585,1.0,0.0585,0.05
+Ally Auto Receivables Trust 2023-1 (prime),A-3,AAA,372010000.0,0.0546,0.0585,1.0,0.0585,0.05
+Ally Auto Receivables Trust 2023-1 (prime),A-4,AAA,69800000.0,0.0527,0.0585,1.0,0.0585,0.05
+Ally Auto Receivables Trust 2023-1 (prime),B,AA,23290000.0,0.058,0.0375,0.0585,0.0375,0.032
+Ally Auto Receivables Trust 2023-1 (prime),C,A,19410000.0,0.062,0.02,0.0375,0.02,0.017
+Ally Auto Receivables Trust 2023-1 (prime),D,BBB,14420000.0,0.066,0.007,0.02,0.007,0.006
+AmeriCredit Auto Receivables 2021-3 (subprime),A-1,AAA,144600000.0,0.0018313,0.331,1.0,0.331,0.3
+AmeriCredit Auto Receivables 2021-3 (subprime),A-2,AAA,290000000.0,0.0041,0.331,1.0,0.331,0.3
+AmeriCredit Auto Receivables 2021-3 (subprime),A-3,AAA,224440000.0,0.0061,0.331,1.0,0.331,0.3
+AmeriCredit Auto Receivables 2021-3 (subprime),B,AA,62100000.0,0.0125,0.2661,0.331,0.2661,0.24
+AmeriCredit Auto Receivables 2021-3 (subprime),C,A,86100000.0,0.0165,0.1761,0.2661,0.1761,0.16
+AmeriCredit Auto Receivables 2021-3 (subprime),D,BBB,67000000.0,0.0225,0.106,0.1761,0.106,0.095
+AmeriCredit Auto Receivables 2021-3 (subprime),E,BB,27270000.0,0.0315,0.0775,0.106,0.0775,0.07
+AmeriCredit Auto Receivables 2022-2 (subprime),A-1,AAA,223000000.0,0.02192,0.331,1.0,0.331,0.3
+AmeriCredit Auto Receivables 2022-2 (subprime),A-2,AAA,496610000.0,0.042,0.331,1.0,0.331,0.3
+AmeriCredit Auto Receivables 2022-2 (subprime),A-3,AAA,269060000.0,0.045,0.331,1.0,0.331,0.3
+AmeriCredit Auto Receivables 2022-2 (subprime),B,AA,93270000.0,0.052,0.266,0.331,0.266,0.24
+AmeriCredit Auto Receivables 2022-2 (subprime),C,A,129130000.0,0.06,0.176,0.266,0.176,0.16
+AmeriCredit Auto Receivables 2022-2 (subprime),D,BBB,100450000.0,0.068,0.106,0.176,0.106,0.095
+AmeriCredit Auto Receivables 2022-2 (subprime),E,BB,40900000.0,0.085,0.0775,0.106,0.0775,0.07
+Santander Drive Auto Receivables 2022-2 (subprime),A-1,AAA,306330000.0,0.0089077,0.3457,1.0,0.3457,0.32
+Santander Drive Auto Receivables 2022-2 (subprime),A-2,AAA,466700000.0,0.0212,0.3457,1.0,0.3457,0.32
+Santander Drive Auto Receivables 2022-2 (subprime),A-3,AAA,401310000.0,0.0298,0.3457,1.0,0.3457,0.32
+Santander Drive Auto Receivables 2022-2 (subprime),B,AA,258580000.0,0.0344,0.1994,0.3457,0.1994,0.18
+Santander Drive Auto Receivables 2022-2 (subprime),C,A,242410000.0,0.0376,0.0623,0.1994,0.0623,0.055
+Exeter Auto Receivables 2022-2 (subprime),A-1,AAA,120500000.0,0.01042,0.5345,1.0,0.5345,0.48
+Exeter Auto Receivables 2022-2 (subprime),A-2,AAA,234000000.0,0.0219,0.5345,1.0,0.5345,0.48
+Exeter Auto Receivables 2022-2 (subprime),A-3,AAA,201740000.0,0.028,0.5345,1.0,0.5345,0.48
+Exeter Auto Receivables 2022-2 (subprime),B,AA,159680000.0,0.0365,0.398,0.5345,0.398,0.36
+Exeter Auto Receivables 2022-2 (subprime),C,A,148560000.0,0.0385,0.271,0.398,0.271,0.245
+Exeter Auto Receivables 2022-2 (subprime),D,BBB,144470000.0,0.0456,0.1475,0.271,0.1475,0.13
+Exeter Auto Receivables 2022-2 (subprime),E,BB,108210000.0,0.0634,0.055,0.1475,0.055,0.05
+Ally Auto Receivables Trust 2022-3 (prime),A-1,AAA,216000000.0,0.046,0.0585,1.0,0.0585,0.05
+Ally Auto Receivables Trust 2022-3 (prime),A-2,AAA,323000000.0,0.0529,0.0585,1.0,0.0585,0.05
+Ally Auto Receivables Trust 2022-3 (prime),A-3,AAA,323000000.0,0.0507,0.0585,1.0,0.0585,0.05
+Ally Auto Receivables Trust 2022-3 (prime),A-4,AAA,71120000.0,0.0507,0.0585,1.0,0.0585,0.05
+Ally Auto Receivables Trust 2022-3 (prime),B,AA,20760000.0,0.057,0.0375,0.0585,0.0375,0.032
+Ally Auto Receivables Trust 2022-3 (prime),C,A,17300000.0,0.062,0.02,0.0375,0.02,0.017
+Ally Auto Receivables Trust 2022-3 (prime),D,BBB,12850000.0,0.066,0.007,0.02,0.007,0.006
+AmeriCredit Auto Receivables 2023-1 (subprime),E,BB,58341450.0,0.09,0.1173,0.1599,0.1173,0.0695
+AmeriCredit Auto Receivables 2023-1 (subprime),D,BBB,81398550.0,0.075,0.1599,0.2193,0.1599,0.0947
+AmeriCredit Auto Receivables 2023-1 (subprime),C,A,93276450.0,0.06,0.2193,0.2874,0.2193,0.1299
+AmeriCredit Auto Receivables 2023-1 (subprime),B,AA,116333550.0,0.05,0.2874,0.3723,0.2874,0.1702
+AmeriCredit Auto Receivables 2023-1 (subprime),A,AAA,859949000.0,0.04,0.3723,1.0,0.3723,0.2205
+Santander Drive Auto Receivables 2023-2 (subprime),E,BB,47214240.0,0.09,0.1105,0.1581,0.1105,0.0726
+Santander Drive Auto Receivables 2023-2 (subprime),D,BBB,65873760.0,0.075,0.1581,0.2245,0.1581,0.1039
+Santander Drive Auto Receivables 2023-2 (subprime),C,A,75486240.0,0.06,0.2245,0.3006,0.2245,0.1475
+Santander Drive Auto Receivables 2023-2 (subprime),B,AA,94145760.0,0.05,0.3006,0.3955,0.3006,0.1975
+Santander Drive Auto Receivables 2023-2 (subprime),A,AAA,599664000.0,0.04,0.3955,1.0,0.3955,0.2598
+Exeter Automobile Receivables 2022-2 (subprime),E,BB,67404540.0,0.09,0.107,0.1771,0.107,0.0765
+Exeter Automobile Receivables 2022-2 (subprime),D,BBB,94043460.0,0.075,0.1771,0.275,0.1771,0.1267
+Exeter Automobile Receivables 2022-2 (subprime),C,A,107766540.0,0.06,0.275,0.3871,0.275,0.1967
+Exeter Automobile Receivables 2022-2 (subprime),B,AA,134405460.0,0.05,0.3871,0.527,0.3871,0.2769
+Exeter Automobile Receivables 2022-2 (subprime),A,AAA,454553000.0,0.04,0.527,1.0,0.527,0.377
+Exeter Automobile Receivables 2023-1 (subprime),E,BB,127765020.0,0.09,0.11,0.1785,0.11,0.0774
+Exeter Automobile Receivables 2023-1 (subprime),D,BBB,178258980.0,0.075,0.1785,0.274,0.1785,0.1256
+Exeter Automobile Receivables 2023-1 (subprime),C,A,204271020.0,0.06,0.274,0.3835,0.274,0.1929
+Exeter Automobile Receivables 2023-1 (subprime),B,AA,254764980.0,0.05,0.3835,0.52,0.3835,0.27
+Exeter Automobile Receivables 2023-1 (subprime),A,AAA,895680000.0,0.04,0.52,1.0,0.52,0.3661
+DriveTime Auto Owner Trust 2022-2 (subprime),E,BB,140388550.0,0.09,0.1131,0.1849,0.1131,0.0823
+DriveTime Auto Owner Trust 2022-2 (subprime),D,BBB,195871450.0,0.075,0.1849,0.2851,0.1849,0.1345
+DriveTime Auto Owner Trust 2022-2 (subprime),C,A,224453550.0,0.06,0.2851,0.3999,0.2851,0.2074
+DriveTime Auto Owner Trust 2022-2 (subprime),B,AA,279936450.0,0.05,0.3999,0.5431,0.3999,0.2909
+DriveTime Auto Owner Trust 2022-2 (subprime),A,AAA,893239500.0,0.04,0.5431,1.0,0.5431,0.395
+Westlake Automobile Receivables 2022-3 (subprime),E,BB,38126100.0,0.09,0.1169,0.167,0.1169,0.0715
+Westlake Automobile Receivables 2022-3 (subprime),D,BBB,53193900.0,0.075,0.167,0.2369,0.167,0.1022
+Westlake Automobile Receivables 2022-3 (subprime),C,A,60956100.0,0.06,0.2369,0.317,0.2369,0.145
+Westlake Automobile Receivables 2022-3 (subprime),B,AA,76023900.0,0.05,0.317,0.4169,0.317,0.194
+Westlake Automobile Receivables 2022-3 (subprime),A,AAA,443739100.0,0.04,0.4169,1.0,0.4169,0.2551
+GLS Auto Receivables Trust 2022-4 (subprime),E,BB,90180000.0,0.09,0.1152,0.182,0.1152,0.0809
+GLS Auto Receivables Trust 2022-4 (subprime),D,BBB,125820000.0,0.075,0.182,0.2752,0.182,0.1277
+GLS Auto Receivables Trust 2022-4 (subprime),C,A,144180000.0,0.06,0.2752,0.382,0.2752,0.1932
+GLS Auto Receivables Trust 2022-4 (subprime),B,AA,179820000.0,0.05,0.382,0.5152,0.382,0.2681
+GLS Auto Receivables Trust 2022-4 (subprime),A,AAA,654480000.0,0.04,0.5152,1.0,0.5152,0.3616
+Flagship Credit Auto Trust 2022-3 (subprime),E,BB,73426560.0,0.09,0.1194,0.1728,0.1194,0.0746
+Flagship Credit Auto Trust 2022-3 (subprime),D,BBB,102445440.0,0.075,0.1728,0.2474,0.1728,0.108
+Flagship Credit Auto Trust 2022-3 (subprime),C,A,117394560.0,0.06,0.2474,0.3328,0.2474,0.1546
+Flagship Credit Auto Trust 2022-3 (subprime),B,AA,146413440.0,0.05,0.3328,0.4394,0.3328,0.208
+Flagship Credit Auto Trust 2022-3 (subprime),A,AAA,770264400.0,0.04,0.4394,1.0,0.4394,0.2746
+CPS Auto Receivables Trust 2022-C (subprime),E,BB,79959600.0,0.09,0.1082,0.1683,0.1082,0.0747
+CPS Auto Receivables Trust 2022-C (subprime),D,BBB,111560400.0,0.075,0.1683,0.2522,0.1683,0.1162
+CPS Auto Receivables Trust 2022-C (subprime),C,A,127839600.0,0.06,0.2522,0.3483,0.2522,0.1741
+CPS Auto Receivables Trust 2022-C (subprime),B,AA,159440400.0,0.05,0.3483,0.4682,0.3483,0.2404
+CPS Auto Receivables Trust 2022-C (subprime),A,AAA,707294000.0,0.04,0.4682,1.0,0.4682,0.3232
+American Credit Acceptance 2022-3 (subprime),E,BB,111748050.0,0.09,0.1139,0.189,0.1139,0.0844
+American Credit Acceptance 2022-3 (subprime),D,BBB,155911950.0,0.075,0.189,0.2939,0.189,0.1401
+American Credit Acceptance 2022-3 (subprime),C,A,178663050.0,0.06,0.2939,0.4141,0.2939,0.2178
+American Credit Acceptance 2022-3 (subprime),B,AA,222826950.0,0.05,0.4141,0.5639,0.4141,0.3068
+American Credit Acceptance 2022-3 (subprime),A,AAA,648480700.0,0.04,0.5639,1.0,0.5639,0.4178
