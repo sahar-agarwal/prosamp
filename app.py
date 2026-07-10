@@ -779,7 +779,7 @@ with tab6:
 
     st.subheader("Data collection")
     st.markdown(
-        "**Scope: prime and subprime auto-loan ABS.** The dashboard spans both "
+        "**Scope: Subprime auto-loan ABS.** The dashboard spans both "
         "collateral grades; the credibility score is risk-normalized (CE relative to "
         "expected loss, not absolute), so prime and subprime are comparable on the "
         "same axis.\n\n"
