@@ -62,20 +62,50 @@ st.set_page_config(page_title="Credit Enhancement Dashboard",
 
 st.markdown("""
 <style>
-  .block-container { padding-top: 2.2rem; padding-bottom: 2rem; max-width: 1300px; }
-  h1, h2, h3, h4 { color: #405871; font-weight: 600; letter-spacing: -0.01em; }
-  [data-testid="stMetric"], [data-testid="metric-container"] {
-      background: #F3F5F7; border: 1px solid #E6E9EE; border-radius: 12px;
-      padding: 14px 16px; }
-  [data-testid="stMetricValue"] { color: #405871; font-weight: 700; }
-  [data-testid="stMetricLabel"] { color: #58706e; }
-  .stTabs [data-baseweb="tab-list"] { gap: 6px; border-bottom: 1px solid #E6E9EE; }
-  .stTabs [data-baseweb="tab"] { font-weight: 600; color: #7f9bb9; padding: 8px 14px; }
-  .stTabs [aria-selected="true"] { color: #405871; }
-  section[data-testid="stSidebar"] { background: #EEF1F4; border-right: 1px solid #E6E9EE; }
-  #MainMenu, footer { visibility: hidden; }
+  /* ---- layout & rhythm ---- */
+  .block-container { padding-top: 2rem; padding-bottom: 3rem; max-width: 1160px; }
+  section.main > div { gap: 0.4rem; }
+  hr { border-color: #edf0f3; margin: 1.2rem 0; }
+
+  /* ---- typography ---- */
+  html, body, [class*="css"] { font-family: 'Inter','Helvetica Neue',Arial,sans-serif; }
+  h1 { font-size: 1.65rem; font-weight: 700; color:#334a5f; letter-spacing:-.02em; margin-bottom:.15rem; }
+  h2 { font-size: 1.12rem; font-weight: 650; color:#405871; margin-top:1.5rem; letter-spacing:-.01em; }
+  h3, h4 { font-size: .98rem; font-weight: 600; color:#58706e; }
+  [data-testid="stCaptionContainer"] { color:#8a97a4; font-size:.82rem; }
+
+  /* ---- metric cards: airy, soft shadow, no hard border ---- */
+  [data-testid="stMetric"] {
+      background:#ffffff; border:1px solid #eef1f4; border-radius:14px;
+      padding:16px 18px; box-shadow:0 1px 3px rgba(40,58,74,.06); }
+  [data-testid="stMetricLabel"] p { color:#8a97a4; font-size:.8rem; font-weight:500; }
+  [data-testid="stMetricValue"] { color:#334a5f; font-weight:700; font-size:1.5rem; }
+  [data-testid="stMetricDelta"] { font-size:.78rem; }
+
+  /* ---- tabs: clean underline style ---- */
+  .stTabs [data-baseweb="tab-list"] { gap:2px; border-bottom:1px solid #eef1f4; }
+  .stTabs [data-baseweb="tab"] { height:44px; padding:0 18px; background:transparent;
+      color:#93a1af; font-weight:600; font-size:.9rem; }
+  .stTabs [aria-selected="true"] { color:#405871; border-bottom:2px solid #405871; }
+
+  /* ---- sidebar ---- */
+  section[data-testid="stSidebar"] { background:#f7f9fb; border-right:1px solid #eef1f4; }
+  section[data-testid="stSidebar"] .block-container { padding-top:1.4rem; }
+
+  /* ---- tables & inputs ---- */
+  [data-testid="stDataFrame"] { border:1px solid #eef1f4; border-radius:10px; }
+  .stSlider, .stSelectbox { margin-bottom:.3rem; }
+
+  /* ---- hide chrome ---- */
+  #MainMenu, footer, [data-testid="stDecoration"] { visibility: hidden; }
+  [data-testid="stSidebar"],
+  [data-testid="stSidebarCollapsedControl"],
+  [data-testid="collapsedControl"] { visibility: visible !important; }
+
+  header { background:transparent; }
 </style>
 """, unsafe_allow_html=True)
+
 
 TAB_BLURBS = {
     1: "**Lens 1 - CE as a price, over time.** What yield does an investor give up "
@@ -120,14 +150,20 @@ def run_mc(pd_: float, lgd: float, ce: float, rho: float, n: int,
 def pct(x, d: int = 2) -> str:
     return "n/a" if x is None or (isinstance(x, float) and np.isnan(x)) else f"{x*100:.{d}f}%"
 
-
 def style(fig, height: int = 380, x: str | None = None, y: str | None = None,
           title: str | None = None, legend_top: bool = True):
+    # Three stacked bands with real gaps: title (very top) -> legend (its own band)
+    # -> plot. Top placement avoids the left y-labels, the right secondary axis,
+    # and the x-axis title.
+    top = 100 if (title and legend_top) else (72 if legend_top else (50 if title else 16))
     fig.update_layout(
-        height=height, title=title,
-        margin=dict(t=52 if title else (44 if legend_top else 16), l=12, r=16, b=12),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0,
-                    title_text="") if legend_top else dict(),
+        height=height,
+        title=(dict(text=title, x=0.0, xanchor="left", y=0.99, yanchor="top",
+                    font=dict(size=14.5, color="#405871")) if title else None),
+        margin=dict(t=top, l=12, r=16, b=12),
+        legend=(dict(orientation="h", yanchor="bottom", y=1.04, xanchor="left", x=0,
+                     title_text="", font=dict(size=11),
+                     bgcolor="rgba(255,255,255,0)") if legend_top else dict()),
     )
     if x:
         fig.update_xaxes(title_text=x)
@@ -201,10 +237,81 @@ st.sidebar.caption(f"Grade: **{deal['grade']}**  ·  Originator: **{deal['origin
 st.title("Credit Enhancement Dashboard")
 st.caption(f"{deal_name}  ·  {deal['grade']} auto loan ABS")
 
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "1 · Risk-Adjusted Return", "2 · Originator Confidence",
+tab_intro, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "ABS & CE Primer", "1 · Risk-Adjusted Return", "2 · Originator Confidence",
     "3 · Capital Stack", "4 · Triggers", "5 · Convergence",
     "6 · Methodology & Data"])
+
+with tab_intro:
+    st.title("Asset-Backed Securities & Credit Enhancement")
+    st.caption("A one-page primer for the rest of the dashboard.")
+    st.markdown(
+        "An **asset-backed security (ABS)** turns a pool of many small loans into "
+        "rated bonds. This dashboard studies **subprime auto-loan ABS** — thousands of "
+        "car loans to weaker-credit borrowers, pooled and sold as tranched notes.")
+
+    st.divider()
+    st.subheader("How an ABS works")
+    left, right = st.columns([1.1, 1], gap="large")
+    with left:
+        st.markdown(
+            "An ABS does one core thing: it **pools many risky loans and re-slices "
+            "them into bonds of different safety** — so most of the pool can be sold as "
+            "highly-rated debt even though the individual borrowers are not.")
+        st.markdown(
+            "**Pool → trust → tranches.** Thousands of car-loan payments are sold into a "
+            "bankruptcy-remote **trust**, which issues **tranches**: Class A (senior) "
+            "down through the subordinate classes, plus a residual/equity piece at the "
+            "bottom.")
+        st.markdown(
+            "**Two waterfalls, opposite directions:**  \n"
+            "• **Cash flows *down*** — senior notes are paid first, the residual last.  \n"
+            "• **Losses flow *up*** — the residual and junior notes are wiped out first, "
+            "so the senior notes are hit only once losses get severe.")
+        st.markdown(
+            "That asymmetry is the whole trick: **concentrating risk at the bottom is "
+            "what makes the top safe.** The loss level where a tranche first takes a hit "
+            "is its **attachment point** — and everything beneath it *is* its credit "
+            "enhancement. For the senior notes:")
+        st.markdown("> **Senior CE = subordination + overcollateralization + reserve**")
+
+        with right:
+            dot = ('digraph { rankdir=TB; bgcolor="transparent"; ranksep=0.22; '
+               'node[shape=box,style="rounded,filled",fontname=Helvetica,fontcolor=white,'
+               'width=2.7,height=0.42,fixedsize=true,fontsize=11]; '
+               'edge[dir=none,color="#c5ccd6"]; '
+               'P[label="Subprime auto-loan pool",fillcolor="#7f9bb9",fontcolor="#2b3a4a"]; '
+               'A[label="Senior  ·  Class A",fillcolor="#405871"]; '
+               'B[label="Mezzanine  ·  B / C",fillcolor="#58706e"]; '
+               'D[label="Subordinate  ·  D / E",fillcolor="#706240"]; '
+               'R[label="Residual + OC + reserve",fillcolor="#c9b47e",fontcolor="#2b3a4a"]; '
+               'P->A->B->D->R; }')
+            st.graphviz_chart(dot, use_container_width=True)
+            st.caption("cash flows down  ·  losses flow up")
+
+
+    st.divider()
+    st.subheader("Credit enhancement — the buffer")
+    st.markdown(
+        "**Credit enhancement (CE)** absorbs collateral losses *before* the senior "
+        "notes are touched — it's what lets a risky pool support AAA bonds.")
+    f = st.columns(4, gap="medium")
+    f[0].markdown("**Subordination**  \nJunior notes take losses first.")
+    f[1].markdown("**Overcollateralization**  \nMore collateral than notes issued.")
+    f[2].markdown("**Reserve account**  \nA cash cushion held in trust.")
+    f[3].markdown("**Excess spread**  \nExtra interest — a *soft*, performance-dependent buffer.")
+    st.markdown(
+        "*How much CE, of what kind, and how it holds up* is the whole subject of this "
+        "dashboard.")
+
+    st.divider()
+    st.subheader("What the tabs show")
+    g = st.columns(5, gap="small")
+    g[0].markdown("**Price**  \nYield given up for protection.")
+    g[1].markdown("**Signal**  \nHow conservatively it's structured.")
+    g[2].markdown("**Risk transfer**  \nWho absorbs a loss.")
+    g[3].markdown("**Triggers**  \nTripwires that make CE dynamic.")
+    g[4].markdown("**Convergence**  \nHow it all connects.")
 
 
 # --------------------------------------------------------------------------- #
@@ -319,9 +426,19 @@ with tab1:
 with tab2:
     st.markdown(TAB_BLURBS[2])
     cs = scoring.score_deal(deal)
+
+    # The composite is weight-invariant in ORDER (robustness: Spearman >= 0.99),
+    # so we report the RANK, not the number -- the ordering is the information.
+    ranking = scoring.score_all(deals).reset_index(drop=True)
+    ranking.insert(0, "rank", ranking.index + 1)
+    n = len(ranking)
+    my_rank = int(ranking.loc[ranking["deal_name"] == deal_name, "rank"].iloc[0])
+
     c = st.columns(3)
-    c[0].metric("Credibility score", f"{cs.score:.2f}")
-    c[1].metric("Deferred-loss risk", f"{cs.deferred_loss_score:.2f}")
+    c[0].metric("Conservatism rank", f"#{my_rank} of {n}",
+                help="Rank on voluntary structural conservatism. Only the ordering is "
+                     "meaningful; the underlying composite is weight-invariant.")
+    c[1].metric("Deferred-loss risk", f"{cs.deferred_loss_score:.1f}")
     c[2].metric("Red flags", sum(cs.flags.values()))
 
     left, right = st.columns(2)
@@ -331,35 +448,40 @@ with tab2:
             "value": list(cs.components.values())})
         fig = px.bar(comp, x="value", y="component", orientation="h")
         fig.update_traces(marker_color="#405871")
-        style(fig, height=340, x="Contribution to score", y="",
-              title="What drives this deal's credibility", legend_top=False)
+        style(fig, height=340, x="Signed contribution", y="",
+              title="What pushes this deal up or down the ranking", legend_top=False)
         st.plotly_chart(fig, use_container_width=True)
     with right:
         st.markdown("**Structural red flags**")
         for k, v in cs.flags.items():
             st.write(f"{'🔴' if v else '🟢'} {k.replace('_', ' ')}")
 
-    st.markdown("**Deal ranking by credibility (prime + subprime)**")
-    ranking = scoring.score_all(deals_s)
-    st.dataframe(ranking, use_container_width=True, hide_index=True)
+    st.markdown("**Deals ranked by structural conservatism**")
+    show = ranking.drop(columns=["credibility_score"])
+    st.dataframe(show, use_container_width=True, hide_index=True)
+    st.caption("Only the **ranking** is reported. A sensitivity test (equal weights, "
+               "±50% on each, 500 random weight sets) leaves the order essentially "
+               "unchanged (Spearman ≥ 0.99) — so the composite number carries no "
+               "information beyond the rank, and we don't show it.")
 
     last_loss = realized.groupby("deal_name")["cum_net_loss_rate"].last().reset_index()
-    merged = (ranking.merge(last_loss, on="deal_name", how="left")
-              .merge(deals[["deal_name", "grade"]], on="deal_name", how="left"))
+    merged = ranking.merge(last_loss, on="deal_name", how="left")
     if merged["cum_net_loss_rate"].notna().any():
         merged["loss_pct"] = merged["cum_net_loss_rate"] * 100
         merged["short"] = merged["deal_name"].str.replace(r" \(.*\)", "", regex=True)
-        fig = px.scatter(merged.dropna(subset=["loss_pct"]),
-                         x="credibility_score", y="loss_pct", text="short",
-                         color="grade", color_discrete_map=GRADE_COLORS,
-                         labels={"credibility_score": "Credibility score",
-                                 "loss_pct": "Realized cumulative loss (%)",
-                                 "grade": "Grade"})
-        fig.update_traces(textposition="top center", textfont_size=9,
-                          marker=dict(size=13, line=dict(width=1, color="white")))
+        fig = px.scatter(merged.dropna(subset=["loss_pct"]), x="rank", y="loss_pct",
+                         text="short",
+                         labels={"rank": "Conservatism rank (1 = most conservative)",
+                                 "loss_pct": "Realized cumulative loss (%)"})
+        fig.update_traces(marker_color="#405871", textposition="top center",
+                          textfont_size=9,
+                          marker=dict(size=12, line=dict(width=1, color="white")))
         style(fig, height=420,
-              title="Does credibility predict realized loss? (downward = thesis holds)")
+              title="Conservatism rank vs. realized loss (descriptive, not predictive)")
         st.plotly_chart(fig, use_container_width=True)
+        st.caption("Credibility ranks *structural conservatism* (voluntary CE above the "
+                   "rating requirement). It is not a loss forecast — realized loss is "
+                   "driven by collateral, a separate axis.")
     else:
         st.info("Realized loss not available to overlay yet.")
 
@@ -414,87 +536,85 @@ with tab3:
 # --------------------------------------------------------------------------- #
 with tab4:
     st.markdown(TAB_BLURBS[4])
-    ev = triggers.evaluate(deal, deal_perf)
-    tt = ev["table"]
+    st.caption("A **mechanism demonstration**, not a historical backtest. The selected "
+               "deal's structure (priced loss, trigger tightness, OC target) anchors "
+               "the shapes; you drive the loss scenario. Watch the trigger fire, trap "
+               "cash, and rebuild CE.")
 
-    c = st.columns(4)
-    c[0].metric("Trigger status",
-                "BREACHED" if ev["breached"] else "Clear",
-                delta="cash trapped" if ev["breached"] else "passing",
-                delta_color="inverse" if ev["breached"] else "normal")
-    c[1].metric("Breach month",
-                f"{ev['breach_month']}" if ev["breach_month"] else "-")
-    c[2].metric("Min. headroom",
-                pct(ev["min_headroom"]) if ev["min_headroom"] is not None else "n/a",
-                help="Smallest gap between the CNL limit and realized loss after "
-                     "the seasoning window.")
-    c[3].metric("Terminal CNL limit", pct(ev["terminal_limit"]))
+    horizon = 60
+    months = np.arange(1, horizon + 1)
 
-    if len(tt) == 0:
-        st.info("No realized performance to test triggers against yet.")
-    else:
-        left, right = st.columns([1.25, 1])
-        with left:
-            fig = go.Figure()
-            fig.add_scatter(x=tt["period_end"], y=tt["cnl_limit"] * 100,
-                            name="CNL trigger limit", mode="lines",
-                            line=dict(color=C_LIMIT, width=2.4, dash="dash"))
-            fig.add_scatter(x=tt["period_end"], y=tt["realized_cnl"] * 100,
-                            name="Realized cumulative net loss", mode="lines",
-                            line=dict(color=C_LOSS, width=2.6))
-            breach_rows = tt[tt["breached"]]
-            if len(breach_rows):
-                fig.add_scatter(x=breach_rows["period_end"],
-                                y=breach_rows["realized_cnl"] * 100,
-                                name="Breached", mode="markers",
-                                marker=dict(color=C_BREACH, size=6))
-            if ev["breach_month"]:
-                first = tt[tt["month"] == ev["breach_month"]].iloc[0]
-                vmark(fig, first["period_end"], C_BREACH, dash="dot",
-                      text=f"breach · m{ev['breach_month']}")
-            style(fig, x="Reporting period", y="Cumulative net loss (% of pool)",
-                  title="Realized loss vs. the CNL trigger schedule")
-            st.plotly_chart(fig, use_container_width=True)
-        with right:
-            # The mechanical link to Tab 1: a breach steps the OC target up, so CE
-            # rebuilds faster. Show both OC paths to make the link explicit.
-            senior_ce0 = float(deal_tr.sort_values("attachment_pct").iloc[-1]["attachment_pct"])
-            base_path = dynamics.ce_path(deal, deal_perf, senior_ce0, breach_month=None)
-            trig_path = dynamics.ce_path(deal, deal_perf, senior_ce0,
-                                         breach_month=ev["breach_month"])
-            fig = go.Figure()
-            fig.add_scatter(x=base_path["period_end"], y=base_path["oc_pct"] * 100,
-                            name="OC target (no breach)", mode="lines",
-                            line=dict(color=AXIS, width=2, dash="dot"))
-            fig.add_scatter(x=trig_path["period_end"], y=trig_path["oc_pct"] * 100,
-                            name="OC target (with breach step-up)", mode="lines",
-                            line=dict(color=C_CE, width=2.6))
-            style(fig, x="Reporting period", y="OC (% of pool)",
-                  title="A breach steps OC up -> CE rebuilds (see Tab 1)")
-            st.plotly_chart(fig, use_container_width=True)
+    cc = st.columns(3)
+    peak_loss = cc[0].slider(
+        "Scenario peak cumulative loss (% of pool)", 0.0, 40.0,
+        float(round(deal["assumed_pd"] * deal["assumed_lgd"] * 100 * 1.2, 1)), 0.5,
+        help="How high the hypothetical cumulative net loss ramps by the end.") / 100
+    ramp = cc[1].select_slider("Loss timing", ["slow", "base", "fast"], value="base")
+    tight = cc[2].slider(
+        "Trigger tightness", 0.0, 1.0,
+        float(deal.get("trigger_strength", 0.5)), 0.05,
+        help="Higher = tighter trigger, sits closer to priced loss, breaches sooner.")
 
-    st.markdown("**Trigger headroom across the deal universe**")
-    rows = []
-    for _, d in deals.iterrows():
-        e = triggers.evaluate(d, realized[realized["deal_name"] == d["deal_name"]])
-        rows.append({
-            "deal": d["deal_name"],
-            "min_headroom": (e["min_headroom"] or 0.0) * 100,
-            "status": "Breached" if e["breached"] else "Clear",
-        })
-    hr = pd.DataFrame(rows).sort_values("min_headroom")
-    hr["short"] = hr["deal"].str.replace(r" \(.*\)", "", regex=True)
-    fig = px.bar(hr, x="min_headroom", y="short", orientation="h", color="status",
-                 color_discrete_map={"Breached": C_BREACH, "Clear": C_CE},
-                 labels={"min_headroom": "Min. trigger headroom (% of pool)",
-                         "short": "", "status": "Status"})
-    fig.add_vline(x=0, line=dict(color=INK, width=1))
-    style(fig, height=420, title="Who broke their CNL trigger? (left of zero = breached)")
-    st.plotly_chart(fig, use_container_width=True)
-    st.caption("Triggers are modeled parametrically from each deal's priced loss and "
-               "trigger_strength (see Methodology). A breach is the event that makes "
-               "CE dynamic: trapped excess spread steps the OC target up, rebuilding "
-               "protection - the rising leg you see in Tab 1.")
+    # Trigger schedule: deal-anchored, tightness overridable.
+    d2 = deal.copy()
+    d2["trigger_strength"] = tight
+    limit = triggers.cnl_trigger_schedule(d2, horizon)
+
+    # Synthetic loss path: S-curve to the chosen peak; timing shifts the midpoint.
+    mid = {"slow": 0.65, "base": 0.45, "fast": 0.30}[ramp] * horizon
+    s = 1.0 / (1.0 + np.exp(-0.18 * (months - mid)))
+    s = (s - s.min()) / (s.max() - s.min()) if s.max() > s.min() else s
+    loss = peak_loss * s
+
+    seasoned = months >= 6
+    breach_mask = (loss > limit) & seasoned
+    breach_month = int(months[breach_mask][0]) if breach_mask.any() else None
+
+    # OC response: ramp initial -> target over 12m; step target up 50% after a breach.
+    init_oc, tgt = float(deal["initial_oc_pct"]), float(deal["target_oc_pct"])
+    def oc_path(with_step: bool):
+        vals = []
+        for m in months:
+            t_eff = tgt * (1.5 if (with_step and breach_month and m >= breach_month) else 1.0)
+            vals.append(min(t_eff, init_oc + (t_eff - init_oc) * min(1.0, m / 12)))
+        return np.array(vals)
+    oc_base, oc_trig = oc_path(False), oc_path(True)
+
+    c = st.columns(2)
+    c[0].metric("Outcome", "BREACH" if breach_month else "No breach",
+                delta="cash trapped → OC steps up" if breach_month else "excess spread released",
+                delta_color="inverse" if breach_month else "normal")
+    c[1].metric("Terminal trigger limit", pct(float(limit[-1])))
+
+
+    left, right = st.columns(2)
+    with left:
+        fig = go.Figure()
+        fig.add_scatter(x=months, y=limit * 100, name="CNL trigger limit",
+                        line=dict(color=C_LIMIT, dash="dash", width=2.2))
+        fig.add_scatter(x=months, y=loss * 100, name="Scenario cumulative loss",
+                        line=dict(color=C_LOSS, width=2.6))
+        if breach_month:
+            vmark(fig, breach_month, C_BREACH, text=f"breach · m{breach_month}", dash="dot")
+        style(fig, x="Months since closing", y="Cumulative net loss (% of pool)",
+              title="Does the scenario breach the trigger?")
+        st.plotly_chart(fig, use_container_width=True)
+    with right:
+        fig = go.Figure()
+        fig.add_scatter(x=months, y=oc_base * 100, name="OC target (no breach)",
+                        line=dict(color=AXIS, dash="dot", width=2))
+        fig.add_scatter(x=months, y=oc_trig * 100, name="OC target (breach step-up)",
+                        line=dict(color=C_CE, width=2.6))
+        style(fig, x="Months since closing", y="OC target (% of pool)",
+              title="A breach traps cash → OC steps up → CE rebuilds")
+        st.plotly_chart(fig, use_container_width=True)
+
+    st.caption("While the loss line stays under the trigger, excess spread is released "
+               "to the residual. The month it crosses (after the 6-month seasoning "
+               "window), the deal fails its trigger: cash is trapped and the OC target "
+               "steps up, rebuilding protection — the rising leg you see in Tab 1. Push "
+               "the peak-loss and timing sliders to make it breach earlier, later, or "
+               "never; tighten the trigger to see it bite sooner.")
 
 
 # --------------------------------------------------------------------------- #
