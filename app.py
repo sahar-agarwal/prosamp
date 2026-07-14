@@ -82,12 +82,9 @@ st.markdown("""
   [data-testid="stMetricValue"] { color:#334a5f; font-weight:700; font-size:1.5rem; }
   [data-testid="stMetricDelta"] { font-size:.78rem; }
 
-    /* ---- tabs: single static full-width underline ---- */
+    /* ---- tabs: no underline at all ---- */
   .stTabs [data-baseweb="tab-list"] {
-      gap:2px;
-      width:100% !important;
-      border-bottom:1px solid #eef1f4 !important; }
-  /* kill BaseWeb's own underline + moving highlight (the ones that stop at tab 5) */
+      gap:2px; border-bottom:none !important; }
   .stTabs [data-baseweb="tab-border"],
   .stTabs [data-baseweb="tab-highlight"] { display:none !important; }
   .stTabs [data-baseweb="tab"] {
