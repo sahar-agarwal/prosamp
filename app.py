@@ -237,10 +237,11 @@ st.sidebar.caption(f"Grade: **{deal['grade']}**  ·  Originator: **{deal['origin
 st.title("Credit Enhancement Dashboard")
 st.caption(f"{deal_name}  ·  {deal['grade']} auto loan ABS")
 
-tab_intro, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "ABS & CE Primer", "1 · Risk-Adjusted Return", "2 · Originator Confidence",
-    "3 · Capital Stack", "4 · Triggers", "5 · Convergence",
-    "6 · Methodology & Data"])
+tab_intro, tab_be, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "ABS & CE Primer", "Break-even", "1 · Risk-Adjusted Return",
+    "2 · Originator Confidence", "3 · Capital Stack", "4 · Triggers",
+    "5 · Convergence", "6 · Methodology & Data"])
+
 
 with tab_intro:
     st.title("Asset-Backed Securities & Credit Enhancement")
@@ -312,6 +313,69 @@ with tab_intro:
     g[2].markdown("**Risk transfer**  \nWho absorbs a loss.")
     g[3].markdown("**Triggers**  \nTripwires that make CE dynamic.")
     g[4].markdown("**Convergence**  \nHow it all connects.")
+
+with tab_be:
+    st.markdown("### Break-even — how much collateral loss before the senior takes a hit?")
+    st.caption("The subprime-honest version: a real coverage multiple, and exactly what "
+               "stress would eat the cushion. Figures are for the selected deal.")
+
+    senior = deal_tr.sort_values("attachment_pct").iloc[-1]
+    senior_ce = float(senior["attachment_pct"])
+    exp_loss = formulas.expected_loss(deal["assumed_pd"], deal["assumed_lgd"])
+    coverage = senior_ce / exp_loss if exp_loss else 0.0
+
+    rho_base = montecarlo.rho_for_regime(deal["assumed_pd"], "Base case")
+    rho_gfc = montecarlo.rho_for_regime(deal["assumed_pd"], "Global Financial Crisis")
+    mc_base = run_mc(deal["assumed_pd"], deal["assumed_lgd"], senior_ce, rho_base, n_sims, 1.0)
+    mc_gfc = run_mc(deal["assumed_pd"], deal["assumed_lgd"], senior_ce, rho_gfc, n_sims, 3.0)
+
+    c = st.columns(4)
+    c[0].metric("Break-even loss (senior CE)", pct(senior_ce),
+                help="Collateral loss that must be fully absorbed before the senior note loses a dollar.")
+    c[1].metric("Expected loss (priced)", pct(exp_loss))
+    c[2].metric("Coverage multiple", f"{coverage:.1f}×",
+                help="Senior CE ÷ expected loss. Subprime runs ~2–3×, not the 6× of prime.")
+    c[3].metric("P(senior touched) · GFC", pct(mc_gfc["p_ce_exhaustion"]),
+                help="Modeled probability that a GFC-scale (≈3× PD) shock exhausts the senior cushion.")
+
+    fig = go.Figure()
+    fig.add_bar(x=[senior_ce * 100], y=["senior cushion"], orientation="h",
+                marker_color="#b2c1c0", width=0.5, name="Senior CE (cushion)")
+    for name, val, color in [("Expected loss", exp_loss, C_EXPECTED),
+                             ("99% tail · base", mc_base["tail_loss_99"], C_DIST),
+                             ("99% tail · GFC", mc_gfc["tail_loss_99"], C_LOSS)]:
+        vmark(fig, val * 100, color, text=name, dash="dash")
+    fig.add_vline(x=senior_ce * 100, line=dict(color=C_CE, width=2.5))
+    style(fig, height=250, x="Collateral loss (% of pool)", y="",
+          title="The cushion vs. where losses land", legend_top=False)
+    st.plotly_chart(fig, use_container_width=True)
+    st.caption("The bar is the senior cushion. Dashed markers are the priced loss and the "
+               "99% tail under base and GFC-scale stress. A marker **inside** the bar → "
+               "senior safe; **beyond** it → senior touched. For subprime, the base case "
+               "sits well inside the cushion, but a crisis-scale tail can reach it — which "
+               "is the honest headline.")
+
+    st.markdown("**Break-even across the universe** (sorted by coverage)")
+    rows = []
+    for _, d in deals.iterrows():
+        t = tranches[tranches["deal_name"] == d["deal_name"]]
+        if t.empty:
+            continue
+        sce = float(t["attachment_pct"].max())
+        el = formulas.expected_loss(d["assumed_pd"], d["assumed_lgd"])
+        m = run_mc(d["assumed_pd"], d["assumed_lgd"], sce,
+                   montecarlo.rho_for_regime(d["assumed_pd"], "Global Financial Crisis"),
+                   n_sims, 3.0)
+        rows.append({
+            "deal": d["deal_name"], "senior_CE": round(sce, 3),
+            "expected_loss": round(el, 3),
+            "coverage_x": round(sce / el, 1) if el else None,
+            "P(touched)_GFC": round(m["p_ce_exhaustion"], 3)})
+    st.dataframe(pd.DataFrame(rows).sort_values("coverage_x", ascending=False),
+                 use_container_width=True, hide_index=True)
+    st.caption("Coverage is the headline; the GFC breach probability is the honest "
+               "caveat. Model-based (Vasicek + Basel correlation, estimated PD/LGD) — "
+               "read as relative comparison, not a calibrated forecast.")
 
 
 # --------------------------------------------------------------------------- #
@@ -779,7 +843,7 @@ with tab6:
 
     st.subheader("Data collection")
     st.markdown(
-        "**Scope: Subprime auto-loan ABS.** The dashboard spans both "
+        "**Scope: prime and subprime auto-loan ABS.** The dashboard spans both "
         "collateral grades; the credibility score is risk-normalized (CE relative to "
         "expected loss, not absolute), so prime and subprime are comparable on the "
         "same axis.\n\n"
