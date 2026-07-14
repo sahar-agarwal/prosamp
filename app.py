@@ -245,7 +245,6 @@ tab_intro, tab3, tab1, tab4, tab2, tab_val, tab5, tab6 = st.tabs([
 
 with tab_intro:
     st.title("Asset-Backed Securities & Credit Enhancement")
-    st.caption("A one-page primer for the rest of the dashboard.")
     st.markdown(
         "An **asset-backed security (ABS)** turns a pool of many small loans into "
         "rated bonds. This dashboard studies **subprime auto-loan ABS** — thousands of "
