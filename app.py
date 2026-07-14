@@ -82,14 +82,22 @@ st.markdown("""
   [data-testid="stMetricValue"] { color:#334a5f; font-weight:700; font-size:1.5rem; }
   [data-testid="stMetricDelta"] { font-size:.78rem; }
 
-    /* ---- tabs: clean underline style ---- */
+    /* ---- tabs: single static full-width underline ---- */
   .stTabs [data-baseweb="tab-list"] {
-      gap:2px; width:100%; border-bottom:1px solid #eef1f4; }
-  .stTabs [data-baseweb="tab"] { height:44px; padding:0 18px; background:transparent;
+      gap:2px;
+      width:100% !important;
+      border-bottom:1px solid #eef1f4 !important; }
+  /* kill BaseWeb's own underline + moving highlight (the ones that stop at tab 5) */
+  .stTabs [data-baseweb="tab-border"],
+  .stTabs [data-baseweb="tab-highlight"] { display:none !important; }
+  .stTabs [data-baseweb="tab"] {
+      height:44px; padding:0 18px; background:transparent;
       color:#93a1af; font-weight:600; font-size:.9rem; }
-  .stTabs [aria-selected="true"] { color:#405871; border-bottom:2px solid #405871; }
-  /* remove BaseWeb's built-in short underline; keep only our full-width one */
-  .stTabs [data-baseweb="tab-border"] { display:none; }
+  .stTabs [data-baseweb="tab"]:focus,
+  .stTabs [data-baseweb="tab"]:focus-visible {
+      outline:none !important; box-shadow:none !important; }
+  .stTabs [aria-selected="true"] {
+      color:#405871; border-bottom:2px solid #405871; }
 
   
   /* ---- sidebar ---- */
