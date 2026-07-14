@@ -82,12 +82,16 @@ st.markdown("""
   [data-testid="stMetricValue"] { color:#334a5f; font-weight:700; font-size:1.5rem; }
   [data-testid="stMetricDelta"] { font-size:.78rem; }
 
-  /* ---- tabs: clean underline style ---- */
-  .stTabs [data-baseweb="tab-list"] { gap:2px; border-bottom:1px solid #eef1f4; }
+    /* ---- tabs: clean underline style ---- */
+  .stTabs [data-baseweb="tab-list"] {
+      gap:2px; width:100%; border-bottom:1px solid #eef1f4; }
   .stTabs [data-baseweb="tab"] { height:44px; padding:0 18px; background:transparent;
       color:#93a1af; font-weight:600; font-size:.9rem; }
   .stTabs [aria-selected="true"] { color:#405871; border-bottom:2px solid #405871; }
+  /* remove BaseWeb's built-in short underline; keep only our full-width one */
+  .stTabs [data-baseweb="tab-border"] { display:none; }
 
+  
   /* ---- sidebar ---- */
   section[data-testid="stSidebar"] { background:#f7f9fb; border-right:1px solid #eef1f4; }
   section[data-testid="stSidebar"] .block-container { padding-top:1.4rem; }
