@@ -986,6 +986,112 @@ with tab6:
     })
     st.dataframe(reg_tbl, use_container_width=True, hide_index=True)
 
+        st.divider()
+    st.subheader("Formula reference — every calculation in the dashboard")
+    st.caption("Rates are fractions of the pool (0.05 = 5%). Every figure in every "
+               "tab traces to one of the equations below. Symbols: PD, LGD; "
+               "CE₀ = senior CE at issuance (senior attachment point); L = collateral "
+               "loss; Φ = standard-normal CDF.")
+
+    with st.expander("A · Core CE metrics — engine/formulas.py (Eqs. 1–23)"):
+        st.markdown(r"""
+- Expected loss $\;EL = PD \times LGD$
+- CE surplus / shortfall $\;= CE_0 - L_{\text{realized}}$
+- CE coverage ratio $\;= CE_{\text{avail}} / EL$
+- Yield sacrificed $\;= y_{\text{lower}} - y_{\text{higher}}$
+- Incremental CE $\;= CE_{\text{higher}} - CE_{\text{lower}}$
+- Cost of incremental protection $\;= \dfrac{\text{yield sacrificed}}{\text{incremental CE}}$
+- Backtest error $\;= L_{\text{realized}} - EL$
+- CE adequacy $\;= CE_{\text{avail}} - L_{\text{realized}}$; ratio $= CE_{\text{avail}} / L_{\text{realized}}$
+- Rating cushion $\;= CE_{\text{avail}} - CE_{\text{req}}$; ratio $= CE_{\text{avail}} / CE_{\text{req}}$
+- OC cushion $\;= OC_{\text{actual}} - OC_{\text{req}}$
+- Reserve fund ratio $\;= \text{reserve} / \text{pool}$
+- Voluntary CE gap $\;= CE_{\text{actual}} - CE_{\text{req}}$; relative $= (CE_{\text{actual}} - CE_{\text{req}}) / CE_{\text{req}}$
+
+Derived aggregates used across tabs: senior available CE $CE_{\text{avail}} = OC_0 + \text{subordination}$;
+first-loss CE $= OC_0 + \text{reserve}$.
+""")
+
+    with st.expander("B · Monte Carlo loss distribution — engine/montecarlo.py (Vasicek)"):
+        st.markdown(r"Stressed PD: $PD^{\star} = \mathrm{clip}(PD \times m_{\text{shock}},\ 10^{-6},\ 0.999)$")
+        st.latex(r"p(z) = \Phi\!\left(\frac{\Phi^{-1}(PD^{\star}) + \sqrt{\rho}\,z}{\sqrt{1-\rho}}\right),"
+                 r"\quad z \sim N(0,1), \quad L = p(z)\cdot LGD")
+        st.markdown(r"""
+- Expected loss $\;= \tfrac{1}{N}\sum_i L_i$
+- P(CE exhaustion) $\;= \tfrac{1}{N}\sum_i \mathbf{1}[\,L_i > CE_{\text{avail}}\,]$
+- 99% VaR $\;= Q_{0.99}(L)$;  99% Expected shortfall $\;= \mathbb{E}[\,L \mid L \ge \mathrm{VaR}_{99}\,]$
+""")
+        st.markdown(r"Basel IRB 'other retail' asset correlation:")
+        st.latex(r"R(PD) = R_{\min}\,w + R_{\max}\,(1-w),\quad "
+                 r"w = \frac{1-e^{-kPD}}{1-e^{-k}},\quad k=35,\ R_{\min}=0.03,\ R_{\max}=0.16")
+        st.latex(r"\rho = \mathrm{clip}\big(R(PD) + u_{\text{regime}} + \text{adj},\ 0.02,\ 0.90\big)")
+        st.markdown(r"""
+PD shock multipliers $m_{\text{shock}}$: Base 1.0 · Mild 1.5 · COVID 2.0 · GFC 3.0 · Severe 4.0.
+Downturn correlation uplift $u_{\text{regime}}$: Base 0.00 · Mild 0.05 · COVID 0.12 · GFC 0.22 · Severe 0.32.
+""")
+
+    with st.expander("C · Originator credibility — engine/scoring.py (Eqs. 12, 27)"):
+        st.markdown(r"""
+- Excess-spread reliance $\;r_{xs} = \dfrac{xs}{xs + OC_0 + \text{reserve} + \text{sub}}$
+- Voluntary CE gap (relative) $\;g = \dfrac{CE_{\text{avail}} - CE_{\text{req}}}{CE_{\text{req}}}$, with $CE_{\text{avail}} = OC_0 + \text{sub}$
+- Reserve ratio $\;= \text{reserve\_fund\_pct}$
+- Feature normalization $\;\hat{x}_k = \mathrm{clip}(x_k / b_k,\ 0,\ 1)$, bounds $b$: $g$=1.0, reserve=0.03, $r_{xs}$=0.40
+- Weighted component $\;c_k = w_k\,\hat{x}_k$, weights $w$: $g$=+1.5, reserve=+1.0, $r_{xs}$=−1.0, collateral-deterioration=−1.0
+- Credibility score $\;= \sum_k c_k$ (reported only as a **rank**)
+- Red flags: $r_{xs} > 0.15$; reserve $< 0.0075$; $g < 0.10$
+- Deferred-loss score $\;= 1.0\cdot\mathbf{1}[r_{xs}\text{ flag}] + 0.8\cdot\mathbf{1}[\text{small-reserve}] + 1.2\cdot\mathbf{1}[\text{thin-CE}]$
+""")
+
+    with st.expander("D · Capital-stack loss allocation — engine/capital_stack.py (Eqs. 13–20)"):
+        st.markdown(r"""
+- Tranche loss fraction $\;f = \mathrm{clip}\!\big(\tfrac{L - a}{d - a},\ 0,\ 1\big)$ for attachment $a$, detachment $d$
+- Tranche loss amount $\;= f \times \text{original\_balance}$
+- Senior exposure $\;= \max(0,\ L - CE_{\text{beneath}})$; loss rate $= \dfrac{\text{exposure}}{\text{senior balance frac}}$, frac $= \dfrac{\text{senior balance}}{\text{pool}_0}$
+- PV of excess spread $\;\approx xs \times 2.5$;  first loss $= \min(L,\ OC_0 + \text{reserve})$
+- Residual value $\;= \text{PV}_{xs} - \text{first-loss absorbed}$;  erosion $= \text{base} - \text{stressed}$
+- Originator retained-risk cost $\;= \text{reserve} + 0.05 \times \text{subordination}$
+""")
+
+    with st.expander("E · Triggers — engine/triggers.py"):
+        st.markdown(r"Priced loss $= PD \times LGD$. Terminal CNL limit:")
+        st.latex(r"\ell_T = (PD\cdot LGD)\times\big(1.08 + 0.35\,(1-\text{strength})\big)")
+        st.markdown(r"Loss S-shape (then min-max normalized to $[0,1]$), for $N$ months:")
+        st.latex(r"s(t) = \frac{1}{1 + e^{-0.18\,(t - 0.45N)}}")
+        st.latex(r"\text{sched}(t) = 0.45\,\text{linear}(t) + 0.55\,s(t),\quad "
+                 r"\text{linear}(t)=\mathrm{linspace}(\tfrac1N,1,N)")
+        st.markdown(r"""
+- Trigger schedule $\;\ell(t) = \ell_T \cdot \text{sched}(t)$; headroom $= \ell(t) - \text{CNL}_{\text{realized}}(t)$
+- Breach $\;=$ first month $t \ge 6$ (seasoning) with $\text{CNL}_{\text{realized}}(t) > \ell(t)$
+""")
+
+    with st.expander("F · Dynamic CE path — engine/dynamics.py"):
+        st.markdown(r"""
+- Pool factor $\;\mathrm{pf}(m) = \mathrm{clip}\!\big(\tfrac{\text{balance}(m)}{\text{pool}_0},\ 0.05,\ 1\big)$
+- Effective OC target $\;OC_{\text{eff}} = OC_{\text{target}} \times (1.5\ \text{if } m \ge \text{breach month, else } 1)$
+- OC path $\;OC(m) = \min\!\big(OC_{\text{eff}},\ OC_0 + (OC_{\text{eff}} - OC_0)\cdot\min(1,\ m/12)\big)$
+- Structural senior CE (% current pool) $\;= \min\!\big(0.99,\ CE_0/\mathrm{pf}(m) + \max(0, OC(m)-OC_0)\big)$
+- Available cushion (% original) $\;= CE_0 - \text{CNL}_{\text{realized}}(m)$
+""")
+
+    with st.expander("G · Tranche valuation — engine/valuation.py"):
+        st.markdown(r"""
+- Tranche loss fraction $\;tl = \mathrm{clip}\!\big(\tfrac{L-a}{d-a},0,1\big)$
+- Expected loss $\;EL_{tr} = \overline{tl}$;  tail $q = Q_{0.99}(tl)$;  $ES = \mathbb{E}[tl \mid tl \ge q]$;  $UL = \max(0,\ ES - EL_{tr})$
+- EL spread $\;s_{EL} = EL_{tr}/T$;  risk-premium spread $\;s_{RP} = \lambda\,UL/T$  ($T$ = WAL)
+- Fair spread $\;s = s_{EL} + s_{RP}$;  discount rate $r = r_f + s$
+""")
+        st.latex(r"P = 100\left[\,c\cdot\frac{1-(1+r)^{-T}}{r} + (1+r)^{-T}\right]")
+        st.latex(r"\text{CE value (bps)} = \big[\,s(a{=}0,\ \text{width}) - s(a,\ d)\,\big]\times 10^{4}")
+
+    with st.expander("H · Tab-level calculations (inline in app.py)"):
+        st.markdown(r"""
+- **Tab 2 (Risk-Adjusted):** coverage multiple $= CE_0 / EL$
+- **Tab 1 (Capital Stack):** default shock $= \min(50,\ PD\cdot LGD\cdot 100\cdot m_{\text{shock}})\%$
+- **Tab 3 (Triggers) scenario:** $\text{loss}(m) = \text{peak}\times \hat{s}(m)$, midpoint $= \{\text{slow }0.65,\ \text{base }0.45,\ \text{fast }0.30\}\times \text{horizon}$
+- **Valuation tab:** offered spread $= \text{coupon} - r_f$; rich/cheap $= \text{offered} - s$; sensitivity flexes CE $\pm20\%$, PD $\pm30\%$, LGD $\pm15\%$, $\rho$ ($\times0.5$, $+0.15$), $\lambda\ \pm50\%$
+""")
+
+
     st.subheader("What to trust this for")
     st.markdown(
         "- **Relative** comparisons across deals (credibility ranking, "
