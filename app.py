@@ -986,7 +986,7 @@ with tab6:
     })
     st.dataframe(reg_tbl, use_container_width=True, hide_index=True)
 
-        st.divider()
+    st.divider()
     st.subheader("Formula reference — every calculation in the dashboard")
     st.caption("Rates are fractions of the pool (0.05 = 5%). Every figure in every "
                "tab traces to one of the equations below. Symbols: PD, LGD; "
