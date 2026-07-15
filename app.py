@@ -1,5 +1,5 @@
 """
-Credit Enhancement Dashboard - ABS Strategy SIP (prime + subprime auto)
+Credit Enhancement Dashboard - ABS Strategy SIP (subprime auto)
 
 Four analytical lenses on credit enhancement (CE) -- a price, a signal, a
 risk-transfer mechanism, and how they converge -- plus the contractual triggers
@@ -20,7 +20,7 @@ import plotly.io as pio
 import streamlit as st
 
 from engine import (data, formulas, montecarlo, scoring, capital_stack,
-                    dynamics, valuation, triggers)
+                    dynamics, triggers)
 
 # --------------------------------------------------------------------------- #
 # Palette + shared theme                                                       #
@@ -96,7 +96,6 @@ st.markdown("""
   .stTabs [aria-selected="true"] {
       color:#405871; border-bottom:2px solid #405871; }
 
-  
   /* ---- sidebar ---- */
   section[data-testid="stSidebar"] { background:#f7f9fb; border-right:1px solid #eef1f4; }
   section[data-testid="stSidebar"] .block-container { padding-top:1.4rem; }
@@ -115,7 +114,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-
 TAB_BLURBS = {
     1: "**Lens 2 - CE as a price, over time.** What yield does an investor give up "
        "for protection, and how does that protection *build* as the pool amortizes "
@@ -132,21 +130,17 @@ TAB_BLURBS = {
        "trust them for.",
 }
 
-
 @st.cache_data
 def get_deals() -> pd.DataFrame:
     return data.load_deals()
-
 
 @st.cache_data
 def get_tranches() -> pd.DataFrame:
     return data.load_tranches()
 
-
 @st.cache_data
 def get_realized() -> pd.DataFrame:
     return data.load_realized()
-
 
 @st.cache_data
 def run_mc(pd_: float, lgd: float, ce: float, rho: float, n: int,
@@ -154,7 +148,6 @@ def run_mc(pd_: float, lgd: float, ce: float, rho: float, n: int,
     res = montecarlo.simulate(pd_, lgd, ce, correlation=rho, n_sims=n,
                               shock_multiplier=shock, seed=7)
     return {"losses": res.losses, **res.as_dict()}
-
 
 def pct(x, d: int = 2) -> str:
     return "n/a" if x is None or (isinstance(x, float) and np.isnan(x)) else f"{x*100:.{d}f}%"
@@ -180,7 +173,6 @@ def style(fig, height: int = 380, x: str | None = None, y: str | None = None,
         fig.update_yaxes(title_text=y)
     return fig
 
-
 def vmark(fig, x, color: str, text: str | None = None, dash: str = "dash",
           width: float = 1.5) -> None:
     """Vertical marker that is safe on datetime axes.
@@ -194,7 +186,6 @@ def vmark(fig, x, color: str, text: str | None = None, dash: str = "dash",
         fig.add_annotation(x=x, y=1.0, yref="paper", yanchor="bottom",
                            xanchor="left", text=text, showarrow=False,
                            font=dict(color=color, size=10))
-
 
 # --------------------------------------------------------------------------- #
 # Sidebar                                                                       #
@@ -246,11 +237,10 @@ st.sidebar.caption(f"Grade: **{deal['grade']}**  ·  Originator: **{deal['origin
 st.title("Credit Enhancement Dashboard")
 st.caption(f"{deal_name}  ·  {deal['grade']} auto loan ABS")
 
-tab_intro, tab3, tab1, tab4, tab2, tab_val, tab5, tab6 = st.tabs([
+tab_intro, tab3, tab1, tab4, tab2, tab5, tab6 = st.tabs([
     "ABS & CE Primer", "1 · Capital Stack", "2 · Risk-Adjusted Return",
-    "3 · Triggers", "4 · Originator Confidence", "5 · Valuation",
-    "6 · Convergence", "7 · Methodology & Data"])
-
+    "3 · Triggers", "4 · Originator Confidence",
+    "5 · Convergence", "6 · Methodology & Data"])
 
 with tab_intro:
     st.title("Asset-Backed Securities & Credit Enhancement")
@@ -298,7 +288,6 @@ with tab_intro:
             st.graphviz_chart(dot, use_container_width=True)
             st.caption("cash flows down  ·  losses flow up")
 
-
     st.divider()
     st.subheader("Credit enhancement — the buffer")
     st.markdown(
@@ -323,7 +312,7 @@ with tab_intro:
     g[4].markdown("**Convergence**  \nHow it all connects.")
 
 # --------------------------------------------------------------------------- #
-# Tab 1: CE as Risk-Adjusted Return (now dynamic over time)                    #
+# Tab 1: CE as Risk-Adjusted Return(now dynamic over time)                    #
 # --------------------------------------------------------------------------- #
 with tab1:
     st.markdown(TAB_BLURBS[1])
@@ -478,8 +467,6 @@ with tab1:
                "Model-based (Vasicek + Basel correlation, estimated PD/LGD) — relative "
                "comparison, not a calibrated forecast.")
 
-
-
 # --------------------------------------------------------------------------- #
 # Tab 2: CE as Originator Confidence Signal                                   #
 # --------------------------------------------------------------------------- #
@@ -545,7 +532,6 @@ with tab2:
     else:
         st.info("Realized loss not available to overlay yet.")
 
-
 # --------------------------------------------------------------------------- #
 # Tab 3: CE Across the Capital Stack                                          #
 # --------------------------------------------------------------------------- #
@@ -590,15 +576,14 @@ with tab3:
     style(fig, height=320, title="Who bears the loss?")
     st.plotly_chart(fig, use_container_width=True)
 
-
 # --------------------------------------------------------------------------- #
-# Tab 4: Triggers (dynamic, tied to the CE path in Tab 1)                      #
+# Tab 4: Triggers (dynamic, tied to the CE path in Tab 2)                      #
 # --------------------------------------------------------------------------- #
 with tab4:
     st.markdown(TAB_BLURBS[4])
     st.caption("A **mechanism demonstration**, not a historical backtest. The selected "
                "deal's structure (priced loss, trigger tightness, OC target) anchors "
-               "the shapes; you drive the loss scenario. Watch the trigger fire, trap "
+               "the shapes; you drive the loss scenario. Watch thetrigger fire, trap "
                "cash, and rebuild CE.")
 
     horizon = 60
@@ -646,7 +631,6 @@ with tab4:
                 delta_color="inverse" if breach_month else "normal")
     c[1].metric("Terminal trigger limit", pct(float(limit[-1])))
 
-
     left, right = st.columns(2)
     with left:
         fig = go.Figure()
@@ -672,10 +656,9 @@ with tab4:
     st.caption("While the loss line stays under the trigger, excess spread is released "
                "to the residual. The month it crosses (after the 6-month seasoning "
                "window), the deal fails its trigger: cash is trapped and the OC target "
-               "steps up, rebuilding protection — the rising leg you see in Tab 1. Push "
+               "steps up, rebuilding protection — the rising leg you see in Tab 2. Push "
                "the peak-loss and timing sliders to make it breach earlier, later, or "
                "never; tighten the trigger to see it bite sooner.")
-
 
 # --------------------------------------------------------------------------- #
 # Tab 5: Convergence Mindmap (causal argument)                                 #
@@ -830,87 +813,6 @@ with tab5:
         f"*One structural choice, read as price, signal, and risk transfer.*"
     )
 
-with tab_val:
-    st.markdown("### Valuation — what is the tranche worth, and how much of that is CE?")
-    st.caption("A tranche is a call spread on collateral losses — its attachment point "
-               "IS the credit enhancement beneath it. We price it off the simulated loss "
-               "distribution: fair spread = expected loss + a risk premium for the tail.")
-
-    trn = st.selectbox("Tranche",
-                       deal_tr.sort_values("attachment_pct", ascending=False)["tranche"])
-    row = deal_tr[deal_tr["tranche"] == trn].iloc[0]
-    attach, detach, coupon = float(row["attachment_pct"]), float(row["detachment_pct"]), float(row["coupon_pct"])
-
-    ic = st.columns(3)
-    wal = ic[0].slider("Weighted average life (yrs)", 0.5, 6.0, 2.5, 0.5)
-    rf = ic[1].slider("Risk-free rate", 0.0, 0.08, 0.04, 0.005)
-    lam = ic[2].slider("Price of risk (λ)", 0.0, 3.0, 1.0, 0.25,
-                       help="Premium per unit of annualized tail loss. Simulated / calibratable.")
-
-    rho_b = montecarlo.rho_for_regime(deal["assumed_pd"], "Base case")
-    rho_g = montecarlo.rho_for_regime(deal["assumed_pd"], "Global Financial Crisis")
-    losses_b = run_mc(deal["assumed_pd"], deal["assumed_lgd"], attach, rho_b, n_sims, 1.0)["losses"]
-    losses_g = run_mc(deal["assumed_pd"], deal["assumed_lgd"], attach, rho_g, n_sims, 3.0)["losses"]
-
-    v = valuation.value_tranche(losses_b, attach, detach, coupon, wal, rf, lam)
-    ce_bps = valuation.ce_value_bps(losses_b, attach, detach, wal, rf, lam)
-    offered = coupon - rf
-
-    c = st.columns(4)
-    c[0].metric("Fair spread (base)", f"{v.fair_spread*1e4:.0f} bps",
-                help="Required credit spread = expected loss + risk premium.")
-    c[1].metric("Fair price / 100", f"{v.fair_price:.1f}")
-    c[2].metric("CE is worth", f"{ce_bps:.0f} bps",
-                help="Spread the tranche would demand with no enhancement beneath it.")
-    c[3].metric("Rich / cheap vs coupon", f"{(offered - v.fair_spread)*1e4:+.0f} bps",
-                delta="cheap" if offered > v.fair_spread else "rich",
-                delta_color="normal" if offered > v.fair_spread else "inverse")
-
-    left, right = st.columns(2)
-    with left:
-        surf = valuation.value_surface({"Base": losses_b, "GFC": losses_g},
-                                       attach, detach, coupon, wal, rf, lam)
-        comp = pd.DataFrame({"part": ["Expected loss", "Risk premium (tail)"],
-                             "bps": [v.el_spread*1e4, v.rp_spread*1e4]})
-        fig = px.bar(comp, x="bps", y="part", orientation="h")
-        fig.update_traces(marker_color=[C_EXPECTED, C_LOSS])
-        style(fig, height=240, x="Fair spread (bps)", y="",
-              title="What you're paid for: expected loss + tail premium", legend_top=False)
-        st.plotly_chart(fig, use_container_width=True)
-        st.caption(f"Fair spread is a **range, not a point**: base **{surf['Base']*1e4:.0f} bps** "
-                   f"→ GFC-stress **{surf['GFC']*1e4:.0f} bps**. Correlation is the assumption "
-                   f"that broke copula pricing in 2008, so we quote across stress.")
-    with right:
-        base_s = v.fair_spread
-        def fs(pd_=deal["assumed_pd"], lgd=deal["assumed_lgd"], a=attach, rho=rho_b, L=lam):
-            lo = montecarlo.simulate(pd_, lgd, a, correlation=rho, n_sims=n_sims,
-                                     shock_multiplier=1.0, seed=7).losses
-            return valuation.value_tranche(lo, a, detach, coupon, wal, rf, L).fair_spread
-        rows = [
-            ("Credit enhancement", fs(a=attach*0.8), fs(a=min(detach-1e-3, attach*1.2))),
-            ("PD", fs(pd_=deal["assumed_pd"]*0.7), fs(pd_=min(0.99, deal["assumed_pd"]*1.3))),
-            ("LGD", fs(lgd=deal["assumed_lgd"]*0.85), fs(lgd=min(0.99, deal["assumed_lgd"]*1.15))),
-            ("Correlation", fs(rho=max(0.02, rho_b*0.5)), fs(rho=min(0.6, rho_b+0.15))),
-            ("Price of risk λ", fs(L=lam*0.5), fs(L=lam*1.5))]
-        td = pd.DataFrame([{"driver": n, "low": (lo-base_s)*1e4, "high": (hi-base_s)*1e4}
-                           for n, lo, hi in rows])
-        fig = go.Figure()
-        fig.add_bar(y=td["driver"], x=td["high"], orientation="h", marker_color=C_LOSS, name="up")
-        fig.add_bar(y=td["driver"], x=td["low"], orientation="h", marker_color=C_DIST, name="down")
-        fig.update_layout(barmode="relative")
-        style(fig, height=240, x="Δ fair spread vs base (bps)", y="",
-              title="Sensitivity: what moves the valuation", legend_top=False)
-        st.plotly_chart(fig, use_container_width=True)
-        st.caption("How far the fair spread moves when each input is flexed. CE and "
-                   "correlation should dominate — that's the point.")
-
-    st.caption("Method: structural loss-distribution tranche valuation — Vasicek losses, "
-               "standard attachment/detachment tranching, fair spread = expected loss + "
-               "λ·tail. Grounded but **relative**: PD/LGD, λ, WAL are estimated/simulated, "
-               "so read it as a methodology and a rich/cheap lens, not a market price.")
-
-
-
 # --------------------------------------------------------------------------- #
 # Tab 6: Methodology & Data                                                     #
 # --------------------------------------------------------------------------- #
@@ -923,8 +825,6 @@ with tab6:
         "shelves, where realized losses fan out enough to make credit enhancement "
         "visible; the credibility score is risk-normalized (CE relative to expected "
         "loss, not absolute).\n\n"
-        "- **Realized performance** comes from SEC EDGAR **ABS-EE** loan-level "
-
         "- **Realized performance** comes from SEC EDGAR **ABS-EE** loan-level "
         "filings (Reg AB II, Schedule AL), pulled by `absee.py`. For each monthly "
         "filing it sums loan-level charge-offs and recoveries to a pool-level "
@@ -959,7 +859,7 @@ with tab6:
         "`senior_CE0 / pool_factor`. Trapped excess spread builds OC from its initial "
         "level toward target over ~12 months; a trigger breach steps the target up "
         "50%. The *available cushion* is senior CE at issuance minus realized loss "
-        "(original-pool basis) -- the honest adequacy test in Tab 1.\n\n"
+        "(original-pool basis) -- the honest adequacy test in Tab 2.\n\n"
         "**Triggers (`triggers.py`).** Cumulative-net-loss trigger schedules are "
         "modeled parametrically: the terminal limit is the priced loss (PD x LGD) "
         "times a headroom that shrinks with `trigger_strength` (tighter = more "
@@ -1082,24 +982,12 @@ Downturn correlation uplift $u_{\text{regime}}$: Base 0.00 · Mild 0.05 · COVID
 - Available cushion (% original) $\;= CE_0 - \text{CNL}_{\text{realized}}(m)$
 """)
 
-    with st.expander("G · Tranche valuation — engine/valuation.py"):
-        st.markdown(r"""
-- Tranche loss fraction $\;tl = \mathrm{clip}\!\big(\tfrac{L-a}{d-a},0,1\big)$
-- Expected loss $\;EL_{tr} = \overline{tl}$;  tail $q = Q_{0.99}(tl)$;  $ES = \mathbb{E}[tl \mid tl \ge q]$;  $UL = \max(0,\ ES - EL_{tr})$
-- EL spread $\;s_{EL} = EL_{tr}/T$;  risk-premium spread $\;s_{RP} = \lambda\,UL/T$  ($T$ = WAL)
-- Fair spread $\;s = s_{EL} + s_{RP}$;  discount rate $r = r_f + s$
-""")
-        st.latex(r"P = 100\left[\,c\cdot\frac{1-(1+r)^{-T}}{r} + (1+r)^{-T}\right]")
-        st.latex(r"\text{CE value (bps)} = \big[\,s(a{=}0,\ \text{width}) - s(a,\ d)\,\big]\times 10^{4}")
-
-    with st.expander("H · Tab-level calculations (inline in app.py)"):
+    with st.expander("G · Tab-level calculations (inline in app.py)"):
         st.markdown(r"""
 - **Tab 2 (Risk-Adjusted):** coverage multiple $= CE_0 / EL$
 - **Tab 1 (Capital Stack):** default shock $= \min(50,\ PD\cdot LGD\cdot 100\cdot m_{\text{shock}})\%$
 - **Tab 3 (Triggers) scenario:** $\text{loss}(m) = \text{peak}\times \hat{s}(m)$, midpoint $= \{\text{slow }0.65,\ \text{base }0.45,\ \text{fast }0.30\}\times \text{horizon}$
-- **Valuation tab:** offered spread $= \text{coupon} - r_f$; rich/cheap $= \text{offered} - s$; sensitivity flexes CE $\pm20\%$, PD $\pm30\%$, LGD $\pm15\%$, $\rho$ ($\times0.5$, $+0.15$), $\lambda\ \pm50\%$
 """)
-
 
     st.subheader("What to trust this for")
     st.markdown(
